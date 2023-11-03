@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
@@ -118,7 +118,8 @@ namespace Jellyfin.Api.Controllers
         /// <param name="imageTypeLimit">Optional. The max number of images to return, per image type.</param>
         /// <param name="enableImageTypes">"Optional. The image types to include in the output.</param>
         /// <param name="fields">Optional. Specify additional fields of information to return in the output.</param>
-        /// <param name="enableUserData">Optional. Include user data.</param>
+        /// <param name="channelGroups">Optional. If specified, results will be filtered based on group. This allows multiple, pipe delimited.</param>
+    /// <param name="enableUserData">Optional. Include user data.</param>
         /// <param name="sortBy">Optional. Key to sort by.</param>
         /// <param name="sortOrder">Optional. Sort order.</param>
         /// <param name="enableFavoriteSorting">Optional. Incorporate favorite and like status into channel sorting.</param>
@@ -147,7 +148,8 @@ namespace Jellyfin.Api.Controllers
             [FromQuery] int? imageTypeLimit,
             [FromQuery, ModelBinder(typeof(CommaDelimitedArrayModelBinder))] ImageType[] enableImageTypes,
             [FromQuery, ModelBinder(typeof(CommaDelimitedArrayModelBinder))] ItemFields[] fields,
-            [FromQuery] bool? enableUserData,
+            [FromQuery, ModelBinder(typeof(PipeDelimitedArrayModelBinder))] string[] channelGroups,
+        [FromQuery] bool? enableUserData,
             [FromQuery, ModelBinder(typeof(CommaDelimitedArrayModelBinder))] string[] sortBy,
             [FromQuery] SortOrder? sortOrder,
             [FromQuery] bool enableFavoriteSorting = false,
@@ -175,7 +177,8 @@ namespace Jellyfin.Api.Controllers
                     IsSports = isSports,
                     SortBy = sortBy,
                     SortOrder = sortOrder ?? SortOrder.Ascending,
-                    AddCurrentProgram = addCurrentProgram
+                    AddCurrentProgram = addCurrentProgram,
+                ChannelGroups = channelGroups
                 },
                 dtoOptions,
                 CancellationToken.None);
