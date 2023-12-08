@@ -730,7 +730,7 @@ namespace MediaBrowser.Controller.Entities
 
                 if (this is IHasCollectionType view)
                 {
-                    if (view.CollectionType == CollectionType.LiveTv)
+                    if (view.CollectionType == CollectionType.livetv)
                     {
                         return true;
                     }
