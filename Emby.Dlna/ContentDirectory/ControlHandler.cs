@@ -486,7 +486,7 @@ namespace Emby.Dlna.ContentDirectory
             xmlWriter.WriteElementString("UpdateID", _systemUpdateId.ToString(CultureInfo.InvariantCulture));
         }
 
-        /// <summary>
+    /// <summary>
         /// Returns the child items meeting the criteria.
         /// </summary>
         /// <param name="item">The <see cref="BaseItem"/>.</param>

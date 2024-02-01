@@ -178,7 +178,7 @@ namespace Jellyfin.Api.Controllers
                     SortBy = sortBy,
                     SortOrder = sortOrder ?? SortOrder.Ascending,
                     AddCurrentProgram = addCurrentProgram,
-                ChannelGroups = channelGroups
+                    ChannelGroups = channelGroups
                 },
                 dtoOptions,
                 CancellationToken.None);

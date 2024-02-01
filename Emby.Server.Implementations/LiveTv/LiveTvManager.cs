@@ -494,6 +494,7 @@ namespace Emby.Server.Implementations.LiveTv
             }
 
             item.Name = channelInfo.Name;
+            item.ChannelGroup = channelInfo.ChannelGroup;
 
             if (!item.HasImage(ImageType.Primary))
             {

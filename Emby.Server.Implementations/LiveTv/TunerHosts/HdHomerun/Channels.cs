@@ -19,5 +19,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
         public bool DRM { get; set; }
 
         public bool HD { get; set; }
+
+        public string ChannelGroup { get; set; }
+
     }
 }

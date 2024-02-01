@@ -103,7 +103,8 @@ namespace Emby.Server.Implementations.LiveTv.TunerHosts.HdHomerun
                 VideoCodec = i.VideoCodec,
                 ChannelType = ChannelType.TV,
                 IsLegacyTuner = (i.URL ?? string.Empty).StartsWith("hdhomerun", StringComparison.OrdinalIgnoreCase),
-                Path = i.URL
+                Path = i.URL,
+                ChannelGroup = i.ChannelGroup
             }).Cast<ChannelInfo>().ToList();
         }
 

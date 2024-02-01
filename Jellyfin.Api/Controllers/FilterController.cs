@@ -120,7 +120,7 @@ namespace Jellyfin.Api.Controllers
                     .Select(i => i.OfficialRating)
                     .Where(i => !string.IsNullOrWhiteSpace(i))
                 .Distinct(StringComparer.OrdinalIgnoreCase)
-                .Order()
+                .OrderBy(i => i)
                 .ToArray(),
 
             ChannelGroups = itemList
