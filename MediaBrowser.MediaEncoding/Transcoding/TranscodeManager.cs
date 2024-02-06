@@ -4,10 +4,12 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using AsyncKeyedLock;
 using Jellyfin.Data.Enums;
 using Jellyfin.Extensions;
 using MediaBrowser.Common;
@@ -43,25 +45,33 @@ public sealed class TranscodeManager : ITranscodeManager, IDisposable
     private readonly IAttachmentExtractor _attachmentExtractor;
 
     private readonly List<TranscodingJob> _activeTranscodingJobs = new();
-    private readonly Dictionary<string, SemaphoreSlim> _transcodingLocks = new();
+    private readonly AsyncKeyedLocker<string> _transcodingLocks = new(o =>
+    {
+        o.PoolSize = 20;
+        o.PoolInitialFill = 1;
+    });
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TranscodeManager"/> class.
     /// </summary>
-    /// <param name="loggerFactory">The <see cref="ILoggerFactory"/>.</param>
-    /// <param name="fileSystem">The <see cref="IFileSystem"/>.</param>
-    /// <param name="appPaths">The <see cref="IApplicationPaths"/>.</param>
-    /// <param name="serverConfigurationManager">The <see cref="IServerConfigurationManager"/>.</param>
-    /// <param name="userManager">The <see cref="IUserManager"/>.</param>
-    /// <param name="sessionManager">The <see cref="ISessionManager"/>.</param>
-    /// <param name="encodingHelper">The <see cref="EncodingHelper"/>.</param>
-    /// <param name="mediaEncoder">The <see cref="IMediaEncoder"/>.</param>
-    /// <param name="mediaSourceManager">The <see cref="IMediaSourceManager"/>.</param>
-    /// <param name="attachmentExtractor">The <see cref="IAttachmentExtractor"/>.</param>
-    public TranscodeManager(
-        ILoggerFactory loggerFactory,
-        IFileSystem fileSystem,
+    /// <param name="attachmentExtractor">Instance of the <see cref="IAttachmentExtractor"/> interface.</param>
+    /// <param name="appPaths">Instance of the <see cref="IApplicationPaths"/> interface.</param>
+    /// <param name="logger">Instance of the <see cref="ILogger{TranscodingJobHelpers}"/> interface.</param>
+    /// <param name="mediaSourceManager">Instance of the <see cref="IMediaSourceManager"/> interface.</param>
+    /// <param name="fileSystem">Instance of the <see cref="IFileSystem"/> interface.</param>
+    /// <param name="mediaEncoder">Instance of the <see cref="IMediaEncoder"/> interface.</param>
+    /// <param name="serverConfigurationManager">Instance of the <see cref="IServerConfigurationManager"/> interface.</param>
+    /// <param name="sessionManager">Instance of the <see cref="ISessionManager"/> interface.</param>
+    /// <param name="encodingHelper">Instance of <see cref="EncodingHelper"/>.</param>
+    /// <param name="loggerFactory">Instance of the <see cref="ILoggerFactory"/> interface.</param>
+    /// <param name="userManager">Instance of the <see cref="IUserManager"/> interface.</param>
+    public TranscodingJobHelper(
+        IAttachmentExtractor attachmentExtractor,
         IApplicationPaths appPaths,
+        ILogger<TranscodingJobHelper> logger,
+        IMediaSourceManager mediaSourceManager,
+        IFileSystem fileSystem,
+        IMediaEncoder mediaEncoder,
         IServerConfigurationManager serverConfigurationManager,
         IUserManager userManager,
         ISessionManager sessionManager,
@@ -222,11 +232,6 @@ public sealed class TranscodeManager : ITranscodeManager, IDisposable
                 job.CancellationTokenSource.Cancel();
 #pragma warning restore CA1849
             }
-        }
-
-        lock (_transcodingLocks)
-        {
-            _transcodingLocks.Remove(job.Path!);
         }
 
         job.Stop();
@@ -625,11 +630,6 @@ public sealed class TranscodeManager : ITranscodeManager, IDisposable
             }
         }
 
-        lock (_transcodingLocks)
-        {
-            _transcodingLocks.Remove(path);
-        }
-
         if (!string.IsNullOrWhiteSpace(state.Request.DeviceId))
         {
             _sessionManager.ClearTranscodingInfo(state.Request.DeviceId);
@@ -705,21 +705,6 @@ public sealed class TranscodeManager : ITranscodeManager, IDisposable
         }
     }
 
-    /// <inheritdoc />
-    public SemaphoreSlim GetTranscodingLock(string outputPath)
-    {
-        lock (_transcodingLocks)
-        {
-            if (!_transcodingLocks.TryGetValue(outputPath, out SemaphoreSlim? result))
-            {
-                result = new SemaphoreSlim(1, 1);
-                _transcodingLocks[outputPath] = result;
-            }
-
-            return result;
-        }
-    }
-
     private void OnPlaybackProgress(object? sender, PlaybackProgressEventArgs e)
     {
         if (!string.IsNullOrWhiteSpace(e.PlaySessionId))
@@ -742,10 +727,23 @@ public sealed class TranscodeManager : ITranscodeManager, IDisposable
         }
     }
 
+    /// <summary>
+    /// Transcoding lock.
+    /// </summary>
+    /// <param name="outputPath">The output path of the transcoded file.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>An <see cref="IDisposable"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ValueTask<IDisposable> LockAsync(string outputPath, CancellationToken cancellationToken)
+    {
+        return _transcodingLocks.LockAsync(outputPath, cancellationToken);
+    }
+
     /// <inheritdoc />
     public void Dispose()
     {
         _sessionManager.PlaybackProgress -= OnPlaybackProgress;
         _sessionManager.PlaybackStart -= OnPlaybackProgress;
+        _transcodingLocks.Dispose();
     }
 }

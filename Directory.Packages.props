@@ -4,12 +4,13 @@
   </PropertyGroup>
   <!-- Run "dotnet list package (dash,dash)outdated" to see the latest versions of each package.-->
   <ItemGroup Label="Package Dependencies">
+    <PackageVersion Include="AsyncKeyedLock" Version="6.3.4" />
     <PackageVersion Include="AutoFixture.AutoMoq" Version="4.18.1" />
     <PackageVersion Include="AutoFixture.Xunit2" Version="4.18.1" />
     <PackageVersion Include="AutoFixture" Version="4.18.1" />
     <PackageVersion Include="BDInfo" Version="0.7.6.2" />
-    <PackageVersion Include="BlurHashSharp.SkiaSharp" Version="1.3.0" />
-    <PackageVersion Include="BlurHashSharp" Version="1.3.0" />
+    <PackageVersion Include="BlurHashSharp.SkiaSharp" Version="1.3.2" />
+    <PackageVersion Include="BlurHashSharp" Version="1.3.2" />
     <PackageVersion Include="CommandLineParser" Version="2.9.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="Diacritics" Version="3.3.27" />
