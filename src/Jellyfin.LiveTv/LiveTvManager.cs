@@ -123,7 +123,7 @@ namespace Jellyfin.LiveTv
 
         public QueryResult<BaseItem> GetInternalChannels(LiveTvChannelQuery query, DtoOptions dtoOptions, CancellationToken cancellationToken)
         {
-            var user = query.UserId.IsEmpty()
+            var user = query.UserId.Equals(default)
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
@@ -842,7 +842,7 @@ namespace Jellyfin.LiveTv
 
         public async Task<QueryResult<BaseItemDto>> GetRecordingsAsync(RecordingQuery query, DtoOptions options)
         {
-            var user = query.UserId.IsEmpty()
+            var user = query.UserId.Equals(default)
                 ? null
                 : _userManager.GetUserById(query.UserId);
 
