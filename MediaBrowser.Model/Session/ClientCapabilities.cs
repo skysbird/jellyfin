@@ -30,5 +30,9 @@ namespace MediaBrowser.Model.Session
         public string AppStoreUrl { get; set; }
 
         public string IconUrl { get; set; }
+
+        public bool SupportsContentUploading { get; set; }
+
+        public bool SupportsSync { get; set; }
     }
 }
