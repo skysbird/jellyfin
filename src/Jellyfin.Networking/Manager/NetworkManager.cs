@@ -830,7 +830,7 @@ public class NetworkManager : INetworkManager, IDisposable
 
         // Get the first LAN interface address that's not excluded and not a loopback address.
         // Get all available interfaces, prefer local interfaces
-        var availableInterfaces = _interfaces.Where(x => !IPAddress.IsLoopback(x.Address))
+        var availableInterfaces = _interfaces.Where(x => !IPAddress.IsLoopback(x.Address) && !NetworkUtils.IsIPv6LinkLocal(x.Address))
             .OrderByDescending(x => IsInLocalNetwork(x.Address))
             .ThenBy(x => x.Index)
             .ToList();

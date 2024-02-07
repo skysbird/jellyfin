@@ -35,7 +35,8 @@ namespace Jellyfin.LiveTv.TunerHosts
             "application/vnd.apple.mpegurl",
             "application/mpegurl",
             "application/x-mpegurl",
-            "video/vnd.mpeg.dash.mpd"
+            "video/vnd.mpeg.dash.mpd",
+            "audio/x-mpegurl"
         };
 
         private readonly IHttpClientFactory _httpClientFactory;
