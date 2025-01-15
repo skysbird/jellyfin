@@ -190,7 +190,8 @@ public class LiveTvController : BaseJellyfinApiController
                 IsSports = isSports,
                 SortBy = sortBy,
                 SortOrder = sortOrder ?? SortOrder.Ascending,
-                AddCurrentProgram = addCurrentProgram
+                AddCurrentProgram = addCurrentProgram,
+                ChannelGroups = channelGroups
             },
             dtoOptions,
             CancellationToken.None);

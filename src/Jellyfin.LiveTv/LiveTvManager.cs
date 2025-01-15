@@ -625,6 +625,7 @@ namespace Jellyfin.LiveTv
             if (channel is not null)
             {
                 dto.ChannelName = channel.Name;
+                dto.ChannelGroup = channel.ChannelGroup;
 
                 if (channel.HasImage(ImageType.Primary))
                 {
