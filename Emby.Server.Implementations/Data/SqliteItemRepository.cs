@@ -433,7 +433,8 @@ namespace Emby.Server.Implementations.Data
                 AddColumn(connection, "TypedBaseItems", "StartDate", "DATETIME", existingColumnNames);
                 AddColumn(connection, "TypedBaseItems", "EndDate", "DATETIME", existingColumnNames);
                 AddColumn(connection, "TypedBaseItems", "ChannelId", "Text", existingColumnNames);
-                AddColumn(connection, "TypedBaseItems", "ChannelGroup", "Text", existingColumnNames);                AddColumn(connection, "TypedBaseItems", "IsMovie", "BIT", existingColumnNames);
+                AddColumn(connection, "TypedBaseItems", "ChannelGroup", "Text", existingColumnNames);
+                AddColumn(connection, "TypedBaseItems", "IsMovie", "BIT", existingColumnNames);
                 AddColumn(connection, "TypedBaseItems", "CommunityRating", "Float", existingColumnNames);
                 AddColumn(connection, "TypedBaseItems", "CustomRating", "Text", existingColumnNames);
                 AddColumn(connection, "TypedBaseItems", "IndexNumber", "INT", existingColumnNames);
@@ -1378,7 +1379,6 @@ namespace Emby.Server.Implementations.Data
             {
                 item.ChannelGroup = channelGroup;
             }
-
 
             index++;
 
