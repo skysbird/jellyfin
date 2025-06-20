@@ -219,6 +219,7 @@ public class LiveTvController : BaseJellyfinApiController
     /// </summary>
     /// <param name="userId">Optional. Filter by user and attach user data.</param>
     /// <response code="200">Channel groups returned.</response>
+    /// <returns>An <see cref="OkResult"/> containing the channel groups.</returns>
     [HttpGet("Channels/Groups")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [Authorize(Policy = Policies.LiveTvAccess)]
