@@ -18,6 +18,7 @@ public class ChannelGroupDto
     /// </summary>
     public int TotalCount { get; set; }
 
+    /// <summary>
     /// Gets or sets the channels in this group.
     /// </summary>
     public BaseItemDto[] Channels { get; set; } = Array.Empty<BaseItemDto>();
